@@ -1,0 +1,36 @@
+        .btn-amarillo {
+            @include boton($amarillo, inline-block);
+            border-radius: 1.5rem;
+        }
+        
+        .btn-amarillo-block {
+            @include boton($amarillo, block);
+            border-radius: 1.5rem;
+        }
+        
+        .btn-verde {
+            @include boton($verde, inline-block);
+            border-radius: 1.5rem;
+        }
+        
+        .alinear-derecha {
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .boton-rojo-block {
+            border-radius: 1.5rem;
+            @include boton($rojo, block);
+            margin-bottom: 3rem;
+            width: 100%;
+        }
+        
+        .boton-amarillo-block {
+            border-radius: 1.5rem;
+            @include boton($amarillo, block);
+        }
+        
+        .btn-rojo {
+            @include boton($rojo, inline-block);
+            border-radius: 1.5rem;
+        }

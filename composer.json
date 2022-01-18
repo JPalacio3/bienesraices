@@ -1,0 +1,14 @@
+{
+    "name": "joelp/bienesraices",
+    "description": "Creando un proyecto con POO",
+    "authors": [{
+        "name": "J. Palacio",
+        "email": "JoelPalacio630@gmail.com"
+    }],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "App\\": "./clases"
+        }
+    }
+}
