@@ -8,6 +8,10 @@ class Propiedad
     protected static $db;
     protected static $columnasDB = ['id', 'titulo', 'precio', 'imagen', 'descripcion', 'habitaciones', 'wc', 'estacionamiento', 'creado', 'vendedorId'];   // creamos un arreglo en el que incluimos todos los datos para acceder y sanitizar a ellos.
 
+// validación de errores:
+
+protected static $errores = [];
+
     public $id;
     public $titulo;
     public $precio;
@@ -56,7 +60,6 @@ class Propiedad
 
         // Ejecutar la consulta:
         $resultado = self::$db->query($query);
-        debuggear($resultado);
     }
     // identificar y unir los atributos de la base de datos:
     public function atributos()
@@ -79,4 +82,42 @@ class Propiedad
         }
         return $sanitizado;
     }
+
+// VALIDACIÓN DE ERRORES:
+public static function getErrores() {
+return self::$errores;
+}
+
+public function validar() {
+        // Validador de errores al enviar el formulario:
+        if (!$this->titulo) {
+            self::$errores[] = 'Debes añadir un títilo';
+        }
+        if (!$this->precio) {
+            self::$errores[] = 'El precio es obligatorio';
+        }
+        if (strlen(!$this->descripcion) > 20) {
+            self::$errores[] = 'Debes añadir una descripción de la propiedad y  debe contener al menos 20 caracteres';
+        }
+        if (!$this->habitaciones) {
+            self::$errores[] = 'Debes añadir la cantidad de habitaciones';
+        }
+        if (!$this->wc) {
+            self::$errores[] = 'Debes añadir la cantidad de baños';
+        }
+        if (!$this->estacionamiento) {
+            self::$errores[] = 'Debes añadir la cantidad de estacionamientos';
+        }
+        if (!$this->vendedorId) {
+            self::$errores[] = 'Es obligatorio seleccionar el vendedor de la propiedad';
+        }
+        // if (!$this->imagen['name'] || $this->imagen['error']) {
+        //     self::$errores[] = 'Es obligatorio seleccionar una imagen';
+        //     // validar por tamaño de la imagen ( 100kb máximo ):
+        //     $this->medida = 1000 * 100;
+        //     if ($this->imagen['size'] > $this->medida) {
+        //         self::$errores[] = 'La imagen es muy grande';
+        //     }
+        // }
+}
 }
