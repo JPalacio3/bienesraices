@@ -5,7 +5,9 @@
         "name": "J. Palacio",
         "email": "JoelPalacio630@gmail.com"
     }],
-    "require": {},
+    "require": {
+        "intervention/image": "^2.7"
+    },
     "autoload": {
         "psr-4": {
             "App\\": "./clases"

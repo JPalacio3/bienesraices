@@ -8,9 +8,9 @@ class Propiedad
     protected static $db;
     protected static $columnasDB = ['id', 'titulo', 'precio', 'imagen', 'descripcion', 'habitaciones', 'wc', 'estacionamiento', 'creado', 'vendedorId'];   // creamos un arreglo en el que incluimos todos los datos para acceder y sanitizar a ellos.
 
-// validación de errores:
+    // validación de errores:
 
-protected static $errores = [];
+    protected static $errores = [];
 
     public $id;
     public $titulo;
@@ -36,7 +36,7 @@ protected static $errores = [];
         $this->id = $args['id'] ?? '';
         $this->titulo = $args['titulo'] ?? '';
         $this->precio = $args['precio'] ?? '';
-        $this->imagen = $args['imagen'] ?? 'imagen.jpg';
+        $this->imagen = $args['imagen'] ?? '';
         $this->descripcion = $args['descripcion'] ?? '';
         $this->habitaciones = $args['habitaciones'] ?? '';
         $this->wc = $args['wc'] ?? '';
@@ -60,6 +60,7 @@ protected static $errores = [];
 
         // Ejecutar la consulta:
         $resultado = self::$db->query($query);
+        return $resultado;
     }
     // identificar y unir los atributos de la base de datos:
     public function atributos()
@@ -83,12 +84,27 @@ protected static $errores = [];
         return $sanitizado;
     }
 
-// VALIDACIÓN DE ERRORES:
-public static function getErrores() {
-return self::$errores;
-}
+    // SUBIDA DE ARCHIVOS:
+    public function setImagen($imagen)
+    {
+        //Asignar el atributo de imagen al nombre de la imagen:
+        if ($imagen) {
+            $this->imagen = $imagen;
+        }
+    }
 
-public function validar() {
+
+
+
+
+    // VALIDACIÓN DE ERRORES:
+    public static function getErrores()
+    {
+        return self::$errores;
+    }
+
+    public function validar()
+    {
         // Validador de errores al enviar el formulario:
         if (!$this->titulo) {
             self::$errores[] = 'Debes añadir un títilo';
@@ -111,13 +127,9 @@ public function validar() {
         if (!$this->vendedorId) {
             self::$errores[] = 'Es obligatorio seleccionar el vendedor de la propiedad';
         }
-        // if (!$this->imagen['name'] || $this->imagen['error']) {
-        //     self::$errores[] = 'Es obligatorio seleccionar una imagen';
-        //     // validar por tamaño de la imagen ( 100kb máximo ):
-        //     $this->medida = 1000 * 100;
-        //     if ($this->imagen['size'] > $this->medida) {
-        //         self::$errores[] = 'La imagen es muy grande';
-        //     }
-        // }
-}
+        if (!$this->imagen) {
+            self::$errores[] = 'La imágen es obligatoria';
+        }
+        return self::$errores;
+    }
 }
