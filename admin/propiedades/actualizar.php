@@ -1,6 +1,7 @@
  <script type="text/javascript" src="JS/index.js"></script>
  <?php
-    require '../../includes/funciones.php';
+ use App\Propiedad;
+    require '../../includes/app.php';
     autenticado();
 
 
@@ -15,19 +16,10 @@
     // Definir Zona horaria para la fecha
     date_default_timezone_set('America/Mexico_City');
 
-    // CONEXIÓN A LA BASE DE DATOS
-    require '../../includes/config/database.php';
-    $db = conectarDB();
-
-    // CONSUTAR LA BASE DE DATOS PARA OBTENER EL REGISTRO DE LA PROPIEDAD
-    $consulta = "SELECT * FROM propiedades WHERE id = ${id}";
-    $resultado = mysqli_query($db, $consulta);
-    $propiedad = mysqli_fetch_assoc($resultado);
-    // echo '<pre>';
-    // var_dump($propiedad);
-    // echo '</pre>';
-
-
+    // Obtener los datos de la propiedad:
+    $propiedad = Propiedad::find($id);
+    
+    
     // CONSULTAR A LA BASE DE DATOS LOS NOMBRES DE LOS VENDEDORES:
     $consulta = 'SELECT * FROM vendedores';
     $resultado = mysqli_query($db, $consulta);

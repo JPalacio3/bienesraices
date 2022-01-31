@@ -9,6 +9,7 @@ use Intervention\Image\ImageManagerStatic as Image;
 autenticado();
 
 $db = conectarDB();
+$propiedad = new Propiedad;
 
 // CONSULTAR A LA BASE DE DATOS LOS NOMBRES DE LOS VENDEDORES:
 
@@ -17,18 +18,6 @@ $resultado = mysqli_query($db, $consulta);
 
 // Arrego con mensajes de errores
 $errores = propiedad::getErrores();
-
-// Evitar que se borren los valores escritos en los campos del formulario cuando se refresque la página:
-$titulo = '';
-$precio = '';
-$descripcion = '';
-$habitaciones = '';
-$wc = '';
-$estacionamiento = '';
-$vendedorId = '';
-$imagen = '';
-
-// var_dump( $db );
 
 // La superglobal $_SERVER contiene toda la información del servidor HTTP y es muy útil para saber la dirección IP del cliente, el nombre del host, el agente del cliente, etc.
 // echo '<pre>';
@@ -56,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $image = Image::make($_FILES['imagen']['tmp_name'])->fit(800, 600);
         $propiedad->setImagen($nombreImagen);
     }
-
+ 
     // VALIDAR  
     $errores = $propiedad->validar();
 
@@ -102,56 +91,7 @@ incluirTemplates('header');
     ?>
 
     <form class='formulario' method='POST' action='/admin/propiedades/crear.php' enctype='multipart/form-data'>
-        <fieldset>
-            <legend> Información General </legend>
-
-            <label for='titulo'> Título </label>
-            <input type='text' name='titulo' id='titulo' placeholder='Título de la Propiedad' require value="<?php echo $titulo; ?>">
-
-            <label for='precio'> Precio </label>
-            <input type='number' name='precio' id='precio' placeholder='Precio de la Propiedad' min=1000000 require value="<?php echo $precio; ?>">
-
-            <label for='imagen'> Imagen </label>
-            <input type='file' name='imagen' id='imagen' accept='image/jpeg, image/png, image/jpg' value="<?php echo $imagen; ?>"> <!-- permite seleccionar el tipo de archivo que se puede subir -->
-
-            <label for='descripcion'> Descripción </label>
-            <textarea name='descripcion' id='descripcion'><?php echo $descripcion;
-                                                            ?> </textarea>
-        </fieldset>
-        <!--Información General -->
-
-        <fieldset>
-            <legend> Información de la Propiedad </legend>
-
-            <label for='habitaciones'> Habitaciones </label>
-            <input type='number' name='habitaciones' id='habitaciones' placeholder='Ejm: 3' require min=1 max=9 value="<?php echo $habitaciones; ?>">
-
-            <label for='wc'> Baños </label>
-            <input type='number' name='wc' id='wc' placeholder='Ejm: 3' require min=1 max=9 value="<?php echo $wc; ?>">
-
-            <label for='estacionamiento'> Estacionamiento </label>
-            <input type='number' name='estacionamiento' id='estacionamiento' placeholder='Ejm: 3' require min=1 max=9 value="<?php echo $estacionamiento; ?>">
-        </fieldset>
-        <!--Información de la propiedad -->
-
-        <fieldset>
-            <legend> Vendedor </legend>
-            <select name='vendedorId' id='vendedorId'>
-                <option selected disabled> Seleccione vendedor </option>
-                <?php while ($vendedorId = mysqli_fetch_assoc($resultado)) : ?>
-                    <option <?php echo $vendedorId == $vendedorId['id'] ? 'selected' : '';
-                            ?> value=" <?php echo $vendedorId['id']; ?> ">
-                        <?php echo $vendedorId['nombre'] . ' ' . $vendedorId['apellido'];
-                        ?>
-                        <!-- insertamos los valores de los vendedores con los valores de la base de datos -->
-                    </option>
-                <?php endwhile;
-                ?>
-
-            </select>
-        </fieldset>
-        <!--Vendedor -->
-
+        <?php include '../../includes/templates/formulario_propiedades.php' ?>
         <input type='submit' value='Crear Propiedad' class='btn btn-verde'>
 
     </form>
