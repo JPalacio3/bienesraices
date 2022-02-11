@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $image = Image::make($_FILES['imagen']['tmp_name'])->fit(800, 600);
         $propiedad->setImagen($nombreImagen);
     }
- 
+
     // VALIDAR  
     $errores = $propiedad->validar();
 
