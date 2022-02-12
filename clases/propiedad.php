@@ -83,8 +83,6 @@ class Propiedad
         foreach ($atributos as $key => $value) {
             $valores[] = "{$key} = '{$value}'";
         }
-// debuggear($valores);
-// exit;
 
         $query = "UPDATE propiedades SET ";
         $query .= join(', ', $valores);
@@ -93,12 +91,23 @@ class Propiedad
 
         $resultado = self::$db->query($query);
 
-        if ($resultado) {
-            // REDIRECCIONAR AL USUARIO UNA VEZ QUE SE HAYAN ENVIADO LOS DAOS DEL FORMULARIO A LA BASE DE DATOS:
+        if($resultado) {
+            $this->borrarImagen();
 
             header('location: /admin?resultado=2');
         }
-        return $resultado;
+    }
+
+    // Eliminar un registro:
+    public function eliminar()
+    {
+        // ELIMINAR LA PROPIEDAD:
+        $query = "DELETE FROM propiedades WHERE id = " . self::$db->escape_string($this->id) . " LIMIT 1";
+        $resultado = self::$db->query($query);
+
+        if ($resultado) {
+            header('Location: /admin?resultado=3');
+        }
     }
 
     // identificar y unir los atributos de la base de datos:
@@ -127,16 +136,22 @@ class Propiedad
     public function setImagen($imagen)
     {
         //Comprobar si existe el archivo:
-        if (!isset($this->id)) {
-            $existeArchivo = file_exists(CARPETA_IMAGENES . $this->imagen);
-            if ($existeArchivo) {
-                unlink(CARPETA_IMAGENES . $this->imagen);
-            }
+        if (isset($this->id)) {
+            $this->borrarImagen();
         }
-
         //Asignar el atributo de imagen al nombre de la imagen:
         if ($imagen) {
             $this->imagen = $imagen;
+        }
+    }
+
+    // Eliminar el archivo de imagen:
+    public function borrarImagen()
+    {
+        //ELIMINACIÓN DEL ARCHIVO:
+        $existeArchivo = file_exists(CARPETA_IMAGENES . $this->imagen);
+        if ($existeArchivo) {
+            unlink(CARPETA_IMAGENES . $this->imagen);
         }
     }
 

@@ -21,18 +21,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = filter_var($id, FILTER_VALIDATE_INT);
 
     if ($id) {
-        //ELIMINACIÓN DEL ARCHIVO:
-        $query = "SELECT imagen FROM propiedades WHERE id = ${id}";
-        $resultado = mysqli_query($db, $query);
-        $propiedad = mysqli_fetch_assoc($resultado);
-        unlink('../imagenes/' . $propiedad['imagen']);
 
-        // ELIMINAR LA PROPIEDAD:
-        $query = "DELETE FROM propiedades WHERE id = ${id}";
-        $resultado = mysqli_query($db, $query);
-    }
-    if ($resultado) {
-        header('Location: /admin?resultado=3');
+        $propiedad = Propiedad::find($id);
+
+        $propiedad->eliminar();
+
     }
 }
 

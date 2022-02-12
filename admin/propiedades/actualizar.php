@@ -61,6 +61,7 @@
 
             // Almacenar la imagen en el disco duro:
             $image->save(CARPETA_IMAGENES . $nombreImagen);
+            $propiedad->actualizar();
             $propiedad->guardar();
 
         }
