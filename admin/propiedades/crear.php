@@ -6,6 +6,7 @@ require '../../includes/app.php';
 use App\Propiedad;
 use Intervention\Image\ImageManagerStatic as Image;
 
+
 autenticado();
 
 $db = conectarDB();
@@ -32,19 +33,16 @@ $errores = propiedad::getErrores();
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     //CREAR UNA NUEVA INSTANCIA//
-    $propiedad = new Propiedad($_POST);
+    $propiedad = new Propiedad($_POST['propiedad']);
 
-    // // SUBIDA DE ARCHIVOS AL SERVIDOR:
+    $nombreImagen = md5(uniqid(rand(), true )) . '.jpg';
 
-    // // Generar un nombre único para cada imágen:
-    $nombreImagen = md5(uniqid(rand(), true)) . '.jpg';
-
-    // Setear la imágen:
-    // Realiza un resize a la imagen con Intervention:
-    if ($_FILES['imagen']['tmp_name']) {
-        $image = Image::make($_FILES['imagen']['tmp_name'])->fit(800, 600);
+    // // Crear una instancia de la clase ImageManagerStatic:
+    if ($_FILES['propiedad']['tmp_name']['imagen']) {
+        $image = Image::make($_FILES['propiedad']['tmp_name']['imagen'])->fit(800, 600);
         $propiedad->setImagen($nombreImagen);
     }
+
 
     // VALIDAR  
     $errores = $propiedad->validar();
@@ -52,15 +50,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($errores)) {
 
         // crear carpeta para guardar las imágenes:
-        if (!is_dir(CARPETA_IMAGENES)) {
+        if(!is_dir(CARPETA_IMAGENES)) {
             mkdir(CARPETA_IMAGENES);
         }
 
         // Guarda la imágen en el servidor:
         $image->save(CARPETA_IMAGENES . $nombreImagen);
         // GUARDA EN LA BASE DE DATOS:
-        $resultado = $propiedad->guardar();
-
+        $resultado = $propiedad->crear();
+        
         //MENSAJE DE ÉXITO O ERROR:
 
         if ($resultado) {
@@ -84,8 +82,7 @@ incluirTemplates('header');
     // Insertar el mensaje de error cuando falten datos para validar el formulario
     foreach ($errores as $error) : ?>
         <!-- div contenedor para darle estilos al error-->
-        <div class='alerta error'> <?php echo $error;
-                                    ?> </div>
+        <div class='alerta error'> <?php echo $error; ?> </div>
 
     <?php endforeach;
     ?>

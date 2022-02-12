@@ -47,6 +47,17 @@ class Propiedad
 
     public function guardar()
     {
+        if (isset($this->id)) {
+            // Actualizando:
+            $this->actualizar();
+        } else {
+            //Creando un nuevo registro:
+            $this->crear();
+        }
+    }
+
+    public function crear()
+    {
         // SANITIZAR LOS DATOS:
         $atributos = $this->sanitizarDatos();
 
@@ -55,13 +66,41 @@ class Propiedad
         $query .= join(', ', array_keys($atributos));
         $query .= " ) VALUES (' ";
         $query .= join("', '", array_values($atributos));
-        $query .= " ')";
+        $query .= " ') ";
         // $this-> hace referencia a los atributos públicos de la misma clase.
 
         // Ejecutar la consulta:
         $resultado = self::$db->query($query);
         return $resultado;
     }
+
+    public function actualizar()
+    {
+        // Sanitizar los datos:
+        $atributos = $this->sanitizarDatos();
+
+        $valores = [];
+        foreach ($atributos as $key => $value) {
+            $valores[] = "{$key} = '{$value}'";
+        }
+// debuggear($valores);
+// exit;
+
+        $query = "UPDATE propiedades SET ";
+        $query .= join(', ', $valores);
+        $query .= "WHERE id = '" . self::$db->escape_string($this->id) . "' ";
+        $query .= " LIMIT 1 ";
+
+        $resultado = self::$db->query($query);
+
+        if ($resultado) {
+            // REDIRECCIONAR AL USUARIO UNA VEZ QUE SE HAYAN ENVIADO LOS DAOS DEL FORMULARIO A LA BASE DE DATOS:
+
+            header('location: /admin?resultado=2');
+        }
+        return $resultado;
+    }
+
     // identificar y unir los atributos de la base de datos:
     public function atributos()
     {
@@ -87,15 +126,19 @@ class Propiedad
     // SUBIDA DE ARCHIVOS:
     public function setImagen($imagen)
     {
+        //Comprobar si existe el archivo:
+        if (!isset($this->id)) {
+            $existeArchivo = file_exists(CARPETA_IMAGENES . $this->imagen);
+            if ($existeArchivo) {
+                unlink(CARPETA_IMAGENES . $this->imagen);
+            }
+        }
+
         //Asignar el atributo de imagen al nombre de la imagen:
         if ($imagen) {
             $this->imagen = $imagen;
         }
     }
-
-
-
-
 
     // VALIDACIÓN DE ERRORES:
     public static function getErrores()
@@ -142,13 +185,12 @@ class Propiedad
     }
 
     // Busca un registro por su id:
-public static function find($id) {
+    public static function find($id)
+    {
         $query = "SELECT * FROM propiedades WHERE id = ${id}";
         $resultado = self::consultarSQL($query);
-        return(array_shift($resultado));
-}
-
-
+        return (array_shift($resultado));
+    }
 
     public static function consultarSQL($query)
     {
@@ -178,5 +220,17 @@ public static function find($id) {
             }
         }
         return $objeto;
+    }
+
+
+    // Sincroniza el objeto en memoria con los cambios realizados por el usuario:
+
+    public function sincronizar($args = [])
+    {
+        foreach ($args as $key => $value) {
+            if (property_exists($this, $key) && !is_null($value)) {
+                $this->$key = $value;
+            }
+        }
     }
 }
