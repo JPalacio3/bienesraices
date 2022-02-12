@@ -60,9 +60,11 @@
         if (empty($errores)) {
 
             // Almacenar la imagen en el disco duro:
-            $image->save(CARPETA_IMAGENES . $nombreImagen);
-            $propiedad->actualizar();
-            $propiedad->guardar();
+            if ($image) {
+                $image = Image::make($_FILES['propiedad']['tmp_name']['imagen'])->fit(800, 600);
+                $propiedad->guardar();
+            }
+            
 
         }
     }

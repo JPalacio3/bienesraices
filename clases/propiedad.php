@@ -33,7 +33,7 @@ class Propiedad
 
     public function __construct($args = [])
     {
-        $this->id = $args['id'] ?? '';
+        $this->id = $args['id'] ?? null;
         $this->titulo = $args['titulo'] ?? '';
         $this->precio = $args['precio'] ?? '';
         $this->imagen = $args['imagen'] ?? '';
@@ -43,17 +43,6 @@ class Propiedad
         $this->estacionamiento = $args['estacionamiento'] ?? '';
         $this->creado = date('Y/m/d') ?? '';
         $this->vendedorId = $args['vendedorId'] ?? 1;
-    }
-
-    public function guardar()
-    {
-        if (isset($this->id)) {
-            // Actualizando:
-            $this->actualizar();
-        } else {
-            //Creando un nuevo registro:
-            $this->crear();
-        }
     }
 
     public function crear()
@@ -71,7 +60,10 @@ class Propiedad
 
         // Ejecutar la consulta:
         $resultado = self::$db->query($query);
-        return $resultado;
+
+        if ($resultado) {
+            header('location: /admin?resultado=1');
+        }
     }
 
     public function actualizar()
@@ -81,20 +73,31 @@ class Propiedad
 
         $valores = [];
         foreach ($atributos as $key => $value) {
-            $valores[] = "{$key} = '{$value}'";
+            $valores[] = "{$key}='{$value}'";
         }
 
         $query = "UPDATE propiedades SET ";
-        $query .= join(', ', $valores);
-        $query .= "WHERE id = '" . self::$db->escape_string($this->id) . "' ";
+        $query .= join(', ', $valores );
+        $query .= " WHERE id = '" . self::$db->escape_string($this->id) . "' ";
         $query .= " LIMIT 1 ";
 
         $resultado = self::$db->query($query);
 
-        if($resultado) {
+        if ($resultado) {
             $this->borrarImagen();
 
             header('location: /admin?resultado=2');
+        }
+    }
+
+    public function guardar()
+    {
+        if (!is_null($this->id)) {
+            // Actualizando:
+            $this->actualizar();
+        } else {
+            //Creando un nuevo registro:
+            $this->crear();
         }
     }
 
@@ -136,13 +139,12 @@ class Propiedad
     public function setImagen($imagen)
     {
         //Comprobar si existe el archivo:
-        if (isset($this->id)) {
+        if (!is_null($this->id)) {
             $this->borrarImagen();
+        } else {
+            CARPETA_IMAGENES . $this->imagen;
         }
-        //Asignar el atributo de imagen al nombre de la imagen:
-        if ($imagen) {
-            $this->imagen = $imagen;
-        }
+        
     }
 
     // Eliminar el archivo de imagen:

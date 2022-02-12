@@ -52,19 +52,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // crear carpeta para guardar las imágenes:
         if(!is_dir(CARPETA_IMAGENES)) {
             mkdir(CARPETA_IMAGENES);
-        }
+        } 
 
         // Guarda la imágen en el servidor:
         $image->save(CARPETA_IMAGENES . $nombreImagen);
         // GUARDA EN LA BASE DE DATOS:
-        $resultado = $propiedad->crear();
-        
-        //MENSAJE DE ÉXITO O ERROR:
+        $propiedad->guardar();
 
-        if ($resultado) {
-            // REDIRECCIONAR AL USUARIO UNA VEZ QUE SE HAYAN ENVIADO LOS DATOS DEL FORMULARIO A LA BASE DE DATOS:
-            header('location: /admin?resultado=1');
-        }
     }
 }
 
