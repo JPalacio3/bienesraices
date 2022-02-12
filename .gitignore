@@ -1,6 +1,5 @@
 #ignorar la carpeta de imagenes:
-
-imagenes
+/imagenes
 
 #ignorar la carpeta node_modules:
 node_modules
