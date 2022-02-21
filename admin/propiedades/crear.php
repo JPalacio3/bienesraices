@@ -4,18 +4,18 @@ date_default_timezone_set('America/Mexico_City');
 require '../../includes/app.php';
 
 use App\Propiedad;
+use App\Vendedor;
 use Intervention\Image\ImageManagerStatic as Image;
 
 
 autenticado();
 
-$db = conectarDB();
+// Consulta para obtener todas las propiedades:
 $propiedad = new Propiedad;
 
-// CONSULTAR A LA BASE DE DATOS LOS NOMBRES DE LOS VENDEDORES:
+// Consulta para obtener todos los vendedores:
+$vendedores = Vendedor::all();
 
-$consulta = 'SELECT * FROM vendedores';
-$resultado = mysqli_query($db, $consulta);
 
 // Arrego con mensajes de errores
 $errores = propiedad::getErrores();

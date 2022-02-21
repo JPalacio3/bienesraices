@@ -5,10 +5,11 @@ require '../includes/app.php';
 autenticado();
 
 use App\Propiedad;
+use App\Vendedor;
 
 // Implementar un método para obtener todas las propiedades utilizando Active Record
 $propiedades = Propiedad::all();
-
+$vendedores = Vendedor::all();
 
 // Mensaje de registrado correctamente:
 $resultado = $_GET['resultado'] ?? null;
