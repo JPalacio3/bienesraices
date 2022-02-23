@@ -26,7 +26,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $propiedad = Propiedad::find($id);
 
         $propiedad->eliminar();
-
     }
 }
 
@@ -67,7 +66,7 @@ intval() se usa para convertir un VALOR DE STRING A NÚMERO. Posteriormente agre
     <a href="/admin/propiedades/crear.php" class="btn btn-verde"> Nueva Propiedad</a>
 
     <table class="propiedades">
-
+        <h2>Propiedades</h2>
         <thead>
             <tr>
                 <th>Id</th>
@@ -102,9 +101,43 @@ intval() se usa para convertir un VALOR DE STRING A NÚMERO. Posteriormente agre
             <?php endforeach; ?>
         </tbody>
     </table>
+
+    <h2>Vendedores</h2>
+    <table class="propiedades">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Teléfono</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <!-- Mostrar los resultados-->
+            <?php foreach ($vendedores as $vendedor) : ?>
+
+                <tr>
+                    <td class="id-color"><?php echo $vendedor->id; ?> </td>
+                    <td> <?php echo $vendedor->nombre . ' ' . $vendedor->apellido; ?> </td>
+                    <td><?php echo $vendedor->telefono; ?> </td>
+                    <td>
+                        <!--Abrir ventanas tipo popUp -->
+                        <a href="../admin/vendedores/actualizar.php?id=<?php echo $vendedor->id; ?>" class="boton-amarillo-block">Actualizar</a>
+                        <form method="POST" class="w-100">
+                            <input type="hidden" name="id" value="<?php echo $vendedor->id; ?>">
+                            <input type="submit" class="boton-rojo-block" value="Eliminar">
+                        </form>
+
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+
+
+
+
 </main>
-<?php
-// Cerrar la conexión
-mysqli_close($db);
-?>
+
 <?php incluirTemplates('footer'); ?>

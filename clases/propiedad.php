@@ -32,4 +32,35 @@ class Propiedad extends ActiveRecord
         $this->creado = date('Y/m/d') ?? '';
         $this->vendedorId = $args['vendedorId'] ?? '';
     }
+
+
+    public function validar()
+    {
+        // Validador de errores al enviar el formulario:
+        if (!$this->titulo) {
+            self::$errores[] = 'Debes añadir un títilo';
+        }
+        if (!$this->precio) {
+            self::$errores[] = 'El precio es obligatorio';
+        }
+        if (strlen(!$this->descripcion) > 20) {
+            self::$errores[] = 'Debes añadir una descripción de la propiedad y  debe contener al menos 20 caracteres';
+        }
+        if (!$this->habitaciones) {
+            self::$errores[] = 'Debes añadir la cantidad de habitaciones';
+        }
+        if (!$this->wc) {
+            self::$errores[] = 'Debes añadir la cantidad de baños';
+        }
+        if (!$this->estacionamiento) {
+            self::$errores[] = 'Debes añadir la cantidad de estacionamientos';
+        }
+        if (!$this->vendedorId) {
+            self::$errores[] = 'Es obligatorio seleccionar el vendedor de la propiedad';
+        }
+        if (!$this->imagen) {
+            self::$errores[] = 'La imágen es obligatoria';
+        }
+        return self::$errores;
+    }
 }

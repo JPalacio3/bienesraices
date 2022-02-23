@@ -2,6 +2,7 @@
  <?php
 
     use App\Propiedad;
+    use App\Vendedor;
     use Intervention\Image\ImageManagerStatic as Image;
 
     require '../../includes/app.php';
@@ -21,17 +22,12 @@
 
     // Obtener los datos de la propiedad:
     $propiedad = Propiedad::find($id);
-    // debuggear($propiedad);
-
-
+    
     // CONSULTAR A LA BASE DE DATOS LOS NOMBRES DE LOS VENDEDORES:
-    $consulta = 'SELECT * FROM vendedores';
-    $resultado = mysqli_query($db, $consulta);
+    $vendedores = Vendedor::all();
 
     // Arreglo con mensajes de errores
     $errores = Propiedad::getErrores();
-
-   
 
     // Ejecutar el  código después de que el usuario completa el formulario:
 
@@ -47,25 +43,22 @@
         $errores = $propiedad->validar();
 
         // Subida de archivos:
-        // // Generar un nombre único para cada imágen:
+        // Generar un nombre único para cada imágen:
         $nombreImagen = md5(uniqid(rand(), true)) . '.jpg';
 
-        // // Crear una instancia de la clase ImageManagerStatic:
+        // Crear una instancia de la clase ImageManagerStatic:
         if($_FILES['propiedad']['tmp_name']['imagen']) {
             $image = Image::make($_FILES['propiedad']['tmp_name']['imagen'])->fit(800, 600);
             $propiedad->setImagen($nombreImagen);
         }
-
-
         if (empty($errores)) {
-
             // Almacenar la imagen en el disco duro:
-            if ($image) {
-                $image = Image::make($_FILES['propiedad']['tmp_name']['imagen'])->fit(800, 600);
-                $propiedad->guardar();
-            }
-            
+            if($_FILES['propiedad']['tmp_name']['imagen']) {
+                // Almacenar la imágen:
+                $image->save(CARPETA_IMAGENES . $nombreImagen);
 
+            }
+            $propiedad->guardar();
         }
     }
 
