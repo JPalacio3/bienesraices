@@ -18,7 +18,7 @@ $vendedores = Vendedor::all();
 
 
 // Arrego con mensajes de errores
-$errores = propiedad::getErrores();
+$errores = Propiedad::getErrores();
 
 // La superglobal $_SERVER contiene toda la información del servidor HTTP y es muy útil para saber la dirección IP del cliente, el nombre del host, el agente del cliente, etc.
 // echo '<pre>';
@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     //CREAR UNA NUEVA INSTANCIA//
     $propiedad = new Propiedad($_POST['propiedad']);
 
-    $nombreImagen = md5(uniqid(rand(), true )) . '.jpg';
+    $nombreImagen = md5(uniqid(rand(), true)) . '.jpg';
 
     // // Crear una instancia de la clase ImageManagerStatic:
     if ($_FILES['propiedad']['tmp_name']['imagen']) {
@@ -50,20 +50,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($errores)) {
 
         // crear carpeta para guardar las imágenes:
-        if(!is_dir(CARPETA_IMAGENES)) {
+        if (!is_dir(CARPETA_IMAGENES)) {
             mkdir(CARPETA_IMAGENES);
         }
 
-        if (empty($errores)) {
-            // Almacenar la imagen en el disco duro:
-            if ($_FILES['propiedad']['tmp_name']['imagen']) {
-                // Almacenar la imágen:
-                $image->save(CARPETA_IMAGENES . $nombreImagen);
-            }
-            $propiedad->guardar();
-        }
 
+        //         // Almacenar la imagen en el disco duro:
+        if ($_FILES['propiedad']['tmp_name']['imagen']) {
+            // Almacenar la imágen:
+            $image->save(CARPETA_IMAGENES . $nombreImagen);
+        }
     }
+    $propiedad->crear();
 }
 
 // FORMULARIO PARA CREAR UNA PROPIEDAD

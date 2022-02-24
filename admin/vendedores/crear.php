@@ -2,44 +2,39 @@
 date_default_timezone_set('America/Mexico_City');
 
 require '../../includes/app.php';
+
 use App\Vendedor;
+
 autenticado();
 
-// Validar que sea un ID válido:
-$id = $_GET['id'];
-$id = filter_var($id, FILTER_VALIDATE_INT);
-
-if(!$id) {
-    header('Location: /admin');
-}
-
-//Obtener el arreglo del vendedor desde la base de datos:
-$vendedor = Vendedor::find($id);
+$vendedor = new Vendedor;
 
 // Arrego con mensajes de errores
 $errores = Vendedor::getErrores();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-   // Asignar los valores:
-   $args = $_POST['vendedor'];
-  
-   // Sincronizar objeto en memoria con lo que el usuario escribió:
-    $vendedor->sincronizar($args);
+    // Crear una nueva instancia de vendedor
+    $vendedor = new Vendedor($_POST['vendedor']);
 
-    // Validación:
+    // Validar que no haya camnpos vacíos
     $errores = $vendedor->validar();
 
-    if(empty($errores)) {
+    // NO hay errroes:
+    if (empty($errores)) {
         $vendedor->guardar();
-    }
+}
 }
 ?>
 
 
+
+
+
+
 <?php incluirTemplates('header'); ?>
 <main class='contenedor seccion'>
-    <h1>Actualizar Vendedor(a)</h1>
+    <h1>Registrar Vendedor(a)</h1>
 
     <a href='/admin/index.php' class='btn btn-verde'> Volver</a>
 
@@ -54,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <form class='formulario' method='POST'>
         <?php include '../../includes/templates/formulario_vendedores.php' ?>
-        <input type='submit' value='Guardar Cambios' class='btn btn-verde'>
+        <input type='submit' value='Registrar Vendedor' class='btn btn-verde'>
 
     </form>
     <!--Formulario -->

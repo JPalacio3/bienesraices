@@ -4,6 +4,7 @@
 require '../includes/app.php';
 autenticado();
 
+// Importar las clases:
 use App\Propiedad;
 use App\Vendedor;
 
@@ -18,26 +19,28 @@ $resultado = $_GET['resultado'] ?? null;
 // ELIMINACIÓN DE PROPIEDADES:
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
+    // Validar id:
     $id = $_POST['id'];
     $id = filter_var($id, FILTER_VALIDATE_INT);
 
     if ($id) {
-
-        $propiedad = Propiedad::find($id);
-
-        $propiedad->eliminar();
+        $tipo = $_POST['tipo'];
+        if (validarTipoContenido($tipo)) {
+            // Compara lo que vamos a eliminar:
+            if ($tipo === 'vendedor') {
+                $vendedor = Vendedor::find($id);
+                $vendedor->eliminar();
+            } else if ($tipo == 'propiedad') {
+                $propiedad = Propiedad::find($id);
+                $propiedad->eliminar();
+            }
+        }
     }
 }
 
 
 
 incluirTemplates('header'); ?>
-<!-- incorporación de AlertifyJs y JQery -->
-<link rel="stylesheet" href="../alertifyjs/css/alertify.css">
-<link rel="stylesheet" href="../alertifyjs/css/themes/default.css">
-<script src="jquery-3.6.0.min.js"></script>
-<script src="../alertifyjs/alertify.min.js"></script>
-
 
 <main class="contenedor seccion">
     <h1>Administrador de Bienes Raíces</h1>
@@ -45,25 +48,14 @@ incluirTemplates('header'); ?>
     <!-- Validar que exista el resultado y lo imprime como un memsaje en pantalla.
 intval() se usa para convertir un VALOR DE STRING A NÚMERO. Posteriormente agrego alertify y JQery para mostrar la notificación-->
     <?php
-    if (intval($resultado) === 1) : ?>
-        <script>
-            alertify.confirm('Anuncio creado exitosamente, ¡ Gracias !');
-        </script>
-    <?php endif; ?>
-    <?php
-    if (intval($resultado) === 2) : ?>
-        <script>
-            alertify.confirm('Anuncio Actualizado correctamente, ¡ Gracias !');
-        </script>
-    <?php endif; ?>
-    <?php
-    if (intval($resultado) === 3) : ?>
-        <script>
-            alertify.confirm('Anuncio Eliminado correctamente');
-        </script>
-    <?php endif; ?>
+    $mensaje = mostrarNotificacion(intval($resultado));
+    if ($mensaje) { ?>
+        <p class="alerta exito"><?php echo  s($mensaje); ?> </p>
+    <?php } ?>
+
 
     <a href="/admin/propiedades/crear.php" class="btn btn-verde"> Nueva Propiedad</a>
+    <a href="/admin/vendedores/crear.php" class="btn btn-amarillo"> Nuevo(a) Vendedor(a)</a>
 
     <table class="propiedades">
         <h2>Propiedades</h2>
@@ -93,6 +85,7 @@ intval() se usa para convertir un VALOR DE STRING A NÚMERO. Posteriormente agre
                         <a href="../admin/propiedades/actualizar.php?id=<?php echo $propiedad->id; ?>" class="boton-amarillo-block">Actualizar</a>
                         <form method="POST" class="w-100">
                             <input type="hidden" name="id" value="<?php echo $propiedad->id; ?>">
+                            <input type="hidden" name="tipo" value="propiedad">
                             <input type="submit" class="boton-rojo-block" value="Eliminar">
                         </form>
 
@@ -126,6 +119,7 @@ intval() se usa para convertir un VALOR DE STRING A NÚMERO. Posteriormente agre
                         <a href="../admin/vendedores/actualizar.php?id=<?php echo $vendedor->id; ?>" class="boton-amarillo-block">Actualizar</a>
                         <form method="POST" class="w-100">
                             <input type="hidden" name="id" value="<?php echo $vendedor->id; ?>">
+                            <input type="hidden" name="tipo" value="vendedor">
                             <input type="submit" class="boton-rojo-block" value="Eliminar">
                         </form>
 

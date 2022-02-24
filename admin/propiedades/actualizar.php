@@ -42,6 +42,7 @@
         // Validación de errores:
         $errores = $propiedad->validar();
 
+        if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         // Subida de archivos:
         // Generar un nombre único para cada imágen:
         $nombreImagen = md5(uniqid(rand(), true)) . '.jpg';
@@ -51,15 +52,15 @@
             $image = Image::make($_FILES['propiedad']['tmp_name']['imagen'])->fit(800, 600);
             $propiedad->setImagen($nombreImagen);
         }
-        if (empty($errores)) {
-            // Almacenar la imagen en el disco duro:
+        // if (empty($errores)) {
+        //     // Almacenar la imagen en el disco duro:
             if($_FILES['propiedad']['tmp_name']['imagen']) {
                 // Almacenar la imágen:
                 $image->save(CARPETA_IMAGENES . $nombreImagen);
 
             }
-            $propiedad->guardar();
         }
+        $propiedad->actualizar();
     }
 
     // FORMULARIO PARA CREAR UNA PROPIEDAD
@@ -90,6 +91,4 @@
      <input type='submit' value='Cancelar' class='btn btn-rojo' onclick="cancelar()">
  </main>
 
- <?php
-    incluirTemplates('footer');
-    ?>
+ <?php incluirTemplates('footer'); ?>

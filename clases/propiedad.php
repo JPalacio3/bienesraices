@@ -24,7 +24,7 @@ class Propiedad extends ActiveRecord
         $this->id = $args['id'] ?? null;
         $this->titulo = $args['titulo'] ?? '';
         $this->precio = $args['precio'] ?? '';
-        $this->imagen = $args['imagen'] ?? '';
+        $this->imagen = $args['imagen'] ?? 'te_amo.jpg';
         $this->descripcion = $args['descripcion'] ?? '';
         $this->habitaciones = $args['habitaciones'] ?? '';
         $this->wc = $args['wc'] ?? '';
@@ -38,7 +38,7 @@ class Propiedad extends ActiveRecord
     {
         // Validador de errores al enviar el formulario:
         if (!$this->titulo) {
-            self::$errores[] = 'Debes añadir un títilo';
+            self::$errores[] = 'Debes añadir un título';
         }
         if (!$this->precio) {
             self::$errores[] = 'El precio es obligatorio';
