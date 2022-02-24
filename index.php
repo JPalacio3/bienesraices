@@ -35,7 +35,6 @@ incluirTemplates('header', $inicio = true); // Incluimos el header
 <h2>Casas y Depas en Venta</h2>
 
 <?php
-$limite = 3; // Limite de anuncios
 include 'includes/templates/anuncios.php'; //incluir archivo de anuncios
 ?>
 
